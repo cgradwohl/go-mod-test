@@ -42,7 +42,13 @@ templ hello(name string) {
 templ generate
 ```
 
-3. create main.go file
+3. Install templ dependencies into your package.
+
+```bash
+go get
+```
+
+4. create main.go file
 
 ```go
 // main.go
@@ -61,16 +67,74 @@ func main() {
 }
 ```
 
-3. compile main and include its dependencies
+4. compile main and include its dependencies
 
-```go
+```bash
 go build main.go hello_templ.go
 ```
 
-4. run the executable
+5. run the executable
 
 ```bash
 ./main
 ```
 
+6. alternatively you can tell go to compile all go files in the package and then execute main.go
+
+```bash
+go run *.go
+```
+
 ## Create a components package
+
+1. make components directory
+
+```bash
+mkdir components
+```
+
+2. Only identifiers (like functions, variables, types, etc.) that start with a capital letter are exported from a package and can be accessed from other packages.
+
+Update hello.templ to be capitalizes func and to be part of the components package.
+
+```go
+// hello.templ
+
+package components
+
+templ Hello(name string) {
+	<div>Hello, { name }</div>
+}
+```
+
+3. Import the components package in main.
+
+```go
+// main.go
+
+package main
+
+import (
+	"context"
+	"os"
+
+	"github.com/cgradwohl/go-mod-test/components"
+)
+
+func main() {
+	component := components.Hello("John")
+	component.Render(context.Background(), os.Stdout)
+}
+```
+
+4. Compile main
+
+```bash
+go build main.go
+```
+
+5. Execute main
+
+```
+./main
+```
